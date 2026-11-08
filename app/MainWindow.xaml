@@ -1,0 +1,148 @@
+<Window x:Class="CRTCastWin.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="CRTCast" Width="1040" Height="660" MinWidth="900" MinHeight="600"
+        Icon="pack://application:,,,/Assets/CRTCast-logo.png"
+        Background="Black" WindowStartupLocation="CenterScreen">
+  <Grid>
+    <!-- Phosphor background: dark gradient, soft green glow, CRT scanlines. -->
+    <Rectangle>
+      <Rectangle.Fill>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+          <GradientStop Color="#FF030806" Offset="0"/>
+          <GradientStop Color="Black" Offset="1"/>
+        </LinearGradientBrush>
+      </Rectangle.Fill>
+    </Rectangle>
+    <Rectangle>
+      <Rectangle.Fill>
+        <RadialGradientBrush Center="0,0" GradientOrigin="0,0" RadiusX="1.2" RadiusY="1.4">
+          <GradientStop Color="#1A6BFF94" Offset="0"/>
+          <GradientStop Color="#006BFF94" Offset="1"/>
+        </RadialGradientBrush>
+      </Rectangle.Fill>
+    </Rectangle>
+    <Rectangle IsHitTestVisible="False">
+      <Rectangle.Fill>
+        <DrawingBrush TileMode="Tile" Viewport="0,0,4,4" ViewportUnits="Absolute" Stretch="None">
+          <DrawingBrush.Drawing>
+            <DrawingGroup>
+              <GeometryDrawing Brush="#00000000" Geometry="M0,0 H4 V4 H0 Z"/>
+              <GeometryDrawing Brush="#47000000" Geometry="M0,0 H4 V1 H0 Z"/>
+            </DrawingGroup>
+          </DrawingBrush.Drawing>
+        </DrawingBrush>
+      </Rectangle.Fill>
+    </Rectangle>
+
+    <Grid Margin="28">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="28"/>
+        <ColumnDefinition Width="340"/>
+      </Grid.ColumnDefinitions>
+
+      <!-- Left: header, preview, status -->
+      <Grid Grid.Column="0">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+          <Image Source="pack://application:,,,/Assets/CRTCast-logo.png" Width="64" Height="64">
+            <Image.Effect>
+              <DropShadowEffect Color="{StaticResource PhosphorColor}" BlurRadius="24" ShadowDepth="0" Opacity="0.35"/>
+            </Image.Effect>
+          </Image>
+          <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
+            <TextBlock Text="CRTCast Windows" FontFamily="{StaticResource Mono}" FontSize="32" FontWeight="Heavy"
+                       Foreground="{StaticResource Phosphor}">
+              <TextBlock.Effect>
+                <DropShadowEffect Color="{StaticResource PhosphorColor}" BlurRadius="16" ShadowDepth="0" Opacity="0.6"/>
+              </TextBlock.Effect>
+            </TextBlock>
+            <TextBlock Text="iPhone → AirPlay → this PC → MiSTer → CRT" Foreground="{StaticResource SecondaryText}"
+                       Margin="0,4,0,0"/>
+          </StackPanel>
+        </StackPanel>
+
+        <!-- Preview (4:3) -->
+        <Viewbox Grid.Row="1" Margin="0,18" Stretch="Uniform" MaxHeight="380" HorizontalAlignment="Left">
+          <Border Width="640" Height="480" Background="Black" CornerRadius="14"
+                  BorderBrush="{StaticResource CardBorder}" BorderThickness="1.5" ClipToBounds="True">
+            <Grid>
+              <Image x:Name="PreviewImage" Stretch="Fill" RenderOptions.BitmapScalingMode="LowQuality"/>
+              <StackPanel x:Name="PreviewHint" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="40">
+                <TextBlock Text="▣" FontSize="56" HorizontalAlignment="Center" Foreground="{StaticResource PhosphorDim}"/>
+                <TextBlock x:Name="PreviewHintText" TextAlignment="Center" TextWrapping="Wrap" FontSize="20"
+                           Foreground="{StaticResource SecondaryText}" Margin="0,12,0,0"
+                           Text="On your iPhone: Control Center → Screen Mirroring → CRTCast Windows"/>
+              </StackPanel>
+            </Grid>
+          </Border>
+        </Viewbox>
+
+        <!-- Status -->
+        <StackPanel Grid.Row="2">
+          <DockPanel LastChildFill="False">
+            <Ellipse x:Name="StatusDot" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center">
+              <Ellipse.Effect>
+                <DropShadowEffect x:Name="StatusGlow" Color="{StaticResource PhosphorColor}" BlurRadius="10"
+                                  ShadowDepth="0" Opacity="0"/>
+              </Ellipse.Effect>
+            </Ellipse>
+            <TextBlock x:Name="Headline" Margin="10,0,0,0" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"
+                       Text="Idle"/>
+            <Button x:Name="ResumeButton" DockPanel.Dock="Right" Content="Resume" Click="Resume_Click" Margin="8,0,0,0"/>
+            <Button x:Name="StopButton" DockPanel.Dock="Right" Content="Stop" Click="Stop_Click" Margin="8,0,0,0"
+                    Style="{StaticResource SecondaryButton}"/>
+            <Button x:Name="TestButton" DockPanel.Dock="Right" Content="Test pattern" Click="Test_Click" Margin="8,0,0,0"/>
+          </DockPanel>
+          <TextBlock x:Name="AirPlayText" Foreground="{StaticResource SecondaryText}" FontFamily="{StaticResource Mono}"
+                     FontSize="11.5" TextWrapping="Wrap" Margin="0,6,0,0"/>
+          <TextBlock x:Name="ErrorText" Foreground="#FF6B6B" TextWrapping="Wrap" Margin="0,6,0,0" Visibility="Collapsed"/>
+          <TextBox x:Name="StatusLines" IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0"
+                   Foreground="{StaticResource SecondaryText}" FontSize="11.5" TextWrapping="Wrap" Margin="0,6,0,0">
+            <TextBox.Template>
+              <ControlTemplate TargetType="TextBox">
+                <ScrollViewer x:Name="PART_ContentHost"/>
+              </ControlTemplate>
+            </TextBox.Template>
+          </TextBox>
+        </StackPanel>
+      </Grid>
+
+      <!-- Right: settings -->
+      <Border Grid.Column="2" Background="{StaticResource Card}" BorderBrush="{StaticResource CardBorder}"
+              BorderThickness="1" CornerRadius="14" Padding="18,6,18,18">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <StackPanel>
+            <TextBlock Text="MiSTer" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="IP address" Foreground="{StaticResource SecondaryText}" Margin="0,0,0,4"/>
+            <TextBox x:Name="HostBox" LostFocus="Setting_Changed" TextChanged="Host_TextChanged"/>
+            <TextBlock Text="Resolution" Foreground="{StaticResource SecondaryText}" Margin="0,10,0,4"/>
+            <ComboBox x:Name="ModeBox" SelectionChanged="Setting_Changed"/>
+            <CheckBox x:Name="Rgb565Box" Content="RGB565 (less bandwidth)" Margin="0,10,0,4" Click="Setting_Changed"/>
+            <TextBlock x:Name="BandwidthText" Style="{StaticResource Caption}"/>
+
+            <TextBlock Text="Sound" Style="{StaticResource SectionHeader}"/>
+            <CheckBox x:Name="AudioBox" Content="Send audio to MiSTer" Click="Setting_Changed"/>
+            <TextBlock Text="Audio delay" Foreground="{StaticResource SecondaryText}" Margin="0,8,0,4"/>
+            <ComboBox x:Name="DelayBox" SelectionChanged="Setting_Changed"/>
+            <CheckBox x:Name="LowLatencyBox" Content="Lowest delay (no lip sync)" Margin="0,10,0,4" Click="Setting_Changed"/>
+            <TextBlock Style="{StaticResource Caption}" Text="Turn Audio On in the Groovy core's OSD."/>
+
+            <TextBlock Style="{StaticResource Caption}" Margin="0,16,0,0"
+                       Text="Changes apply the next time a stream starts (or press Stop, then Resume)."/>
+            <TextBlock Margin="0,10,0,0" FontSize="11.5">
+              <Hyperlink Foreground="{StaticResource Phosphor}" Click="ShowLog_Click">Show AirPlay log</Hyperlink>
+            </TextBlock>
+            <TextBlock x:Name="VersionText" Style="{StaticResource Caption}" Margin="0,10,0,0" Opacity="0.6"/>
+          </StackPanel>
+        </ScrollViewer>
+      </Border>
+    </Grid>
+  </Grid>
+</Window>

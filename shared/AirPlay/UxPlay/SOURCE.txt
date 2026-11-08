@@ -1,0 +1,2 @@
+Receiver core from UxPlay (https://github.com/FDH2/UxPlay), commit 05b0275, GPL-3.0.
+Copied unchanged except: crypto.c and srp.c replaced by ../Shims (Apple CommonCrypto/CryptoKit; PIN pairing stubbed).

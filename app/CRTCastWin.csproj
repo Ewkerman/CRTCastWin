@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms> <!-- tray icon (NotifyIcon) -->
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <PlatformTarget>x64</PlatformTarget>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
+    <AssemblyName>CRTCastWin</AssemblyName>
+    <RootNamespace>CRTCastWin</RootNamespace>
+    <Version>0.4.0</Version>
+    <Product>CRTCast</Product>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- Native core output folder (build.ps1 passes it). -->
+    <CoreBin Condition="'$(CoreBin)' == ''">$(MSBuildThisFileDirectory)..\core\build\$(Configuration)\bin</CoreBin>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="..\assets\CRTCast-logo.png" Link="Assets\CRTCast-logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(CoreBin)\crtcast_core.dll" Link="crtcast_core.dll" CopyToOutputDirectory="PreserveNewest" Condition="Exists('$(CoreBin)\crtcast_core.dll')" />
+    <None Include="$(CoreBin)\crtcast_test.exe" Link="crtcast_test.exe" CopyToOutputDirectory="PreserveNewest" Condition="Exists('$(CoreBin)\crtcast_test.exe')" />
+  </ItemGroup>
+
+</Project>

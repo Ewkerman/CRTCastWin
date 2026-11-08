@@ -1,0 +1,6 @@
+# Build outputs
+core/build/
+app/bin/
+app/obj/
+.vs/
+*.user
